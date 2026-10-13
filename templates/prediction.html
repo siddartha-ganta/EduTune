@@ -1,0 +1,213 @@
+{% extends "base.html" %}
+
+{% block title %}Prediction - EduTune{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="text-primary mb-2">
+                    <i class="fas fa-brain me-2"></i>Prediction System
+                </h2>
+                <p class="text-muted">Make single or batch predictions for engagement and performance scores</p>
+            </div>
+            <a href="{{ url_for('home') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Back to Home
+            </a>
+        </div>
+
+        <!-- Prediction Tabs -->
+        <div class="card shadow-sm">
+            <div class="card-header bg-light">
+                <ul class="nav nav-tabs card-header-tabs" id="predictionTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="single-tab" data-bs-toggle="tab" data-bs-target="#single" type="button" role="tab">
+                            <i class="fas fa-user me-2"></i>Single Prediction
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="batch-tab" data-bs-toggle="tab" data-bs-target="#batch" type="button" role="tab">
+                            <i class="fas fa-file-csv me-2"></i>Batch Prediction
+                        </button>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="card-body">
+                <div class="tab-content" id="predictionTabsContent">
+                    <!-- Single Prediction Tab -->
+                    <div class="tab-pane fade show active" id="single" role="tabpanel">
+                        <form action="{{ url_for('predict_single') }}" method="post">
+                            <div class="row g-3">
+                                {% if feature_names %}
+                                    {% for feature in feature_names %}
+                                    <div class="col-md-6">
+                                        <label for="{{ feature }}" class="form-label">{{ feature.replace('_', ' ').replace('(', ' (') }}</label>
+                                        {% if feature in ['Gender', 'Class_Level', 'Instrument', 'Lesson_Type'] %}
+                                            <select class="form-select" id="{{ feature }}" name="{{ feature }}" required>
+                                                <option value="">Select {{ feature.replace('_', ' ') }}</option>
+                                                {% if feature == 'Gender' %}
+                                                    <option value="Male">Male</option>
+                                                    <option value="Female">Female</option>
+                                                {% elif feature == 'Class_Level' %}
+                                                    <option value="Beginner">Beginner</option>
+                                                    <option value="Intermediate">Intermediate</option>
+                                                    <option value="Advanced">Advanced</option>
+                                                {% elif feature == 'Instrument' %}
+                                                    <option value="Piano">Piano</option>
+                                                    <option value="Guitar">Guitar</option>
+                                                    <option value="Violin">Violin</option>
+                                                    <option value="Drums">Drums</option>
+                                                    <option value="Flute">Flute</option>
+                                                {% elif feature == 'Lesson_Type' %}
+                                                    <option value="Theory">Theory</option>
+                                                    <option value="Practical">Practical</option>
+                                                {% endif %}
+                                            </select>
+                                        {% else %}
+                                            <input type="number" 
+                                                   class="form-control" 
+                                                   id="{{ feature }}" 
+                                                   name="{{ feature }}" 
+                                                   step="0.01" 
+                                                   {% if feature == 'Age' %}min="10" max="18"
+                                                   {% elif feature == 'Stress_Level' or feature == 'Engagement_Level' %}min="1" max="10"
+                                                   {% elif 'Accuracy' in feature or 'Rhythm' in feature %}min="0" max="100"
+                                                   {% elif feature == 'Pitch_Accuracy' %}min="0" max="1"
+                                                   {% endif %}
+                                                   placeholder="Enter {{ feature.replace('_', ' ').lower() }}"
+                                                   value="{% if input_data and feature in input_data %}{{ input_data[feature] }}{% endif %}"
+                                                   required>
+                                        {% endif %}
+                                    </div>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                            
+                            <div class="text-center mt-4">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="fas fa-brain me-2"></i>Make Prediction
+                                </button>
+                            </div>
+                        </form>
+
+                        <!-- Prediction Results -->
+                        {% if predictions %}
+                        <div class="mt-5">
+                            <h5 class="text-primary mb-3">
+                                <i class="fas fa-chart-line me-2"></i>Prediction Results
+                            </h5>
+                            
+                            <div class="row g-4">
+                                <!-- Engagement Score Predictions -->
+                                <div class="col-md-6">
+                                    <div class="card border-primary">
+                                        <div class="card-header bg-primary text-white">
+                                            <h6 class="card-title mb-0">
+                                                <i class="fas fa-heart me-2"></i>Engagement Score Predictions
+                                            </h6>
+                                        </div>
+                                        <div class="card-body">
+                                            {% for model, score in predictions.engagement.items() %}
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                <span class="fw-bold">{{ model }}:</span>
+                                                <span class="badge bg-primary fs-6">{{ score }}</span>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Performance Score Predictions -->
+                                <div class="col-md-6">
+                                    <div class="card border-success">
+                                        <div class="card-header bg-success text-white">
+                                            <h6 class="card-title mb-0">
+                                                <i class="fas fa-chart-line me-2"></i>Performance Score Predictions
+                                            </h6>
+                                        </div>
+                                        <div class="card-body">
+                                            {% for model, score in predictions.performance.items() %}
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                <span class="fw-bold">{{ model }}:</span>
+                                                <span class="badge bg-success fs-6">{{ score }}</span>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Batch Prediction Tab -->
+                    <div class="tab-pane fade" id="batch" role="tabpanel">
+                        <div class="text-center mb-4">
+                            <i class="fas fa-file-csv fa-3x text-primary mb-3"></i>
+                            <h5>Batch Prediction</h5>
+                            <p class="text-muted">Upload a CSV file with student data to get predictions for multiple records</p>
+                        </div>
+                        
+                        <form action="{{ url_for('predict_batch') }}" method="post" enctype="multipart/form-data">
+                            <div class="mb-4">
+                                <label for="batch_file" class="form-label">Select CSV File</label>
+                                <input type="file" class="form-control" id="batch_file" name="batch_file" accept=".csv" required>
+                                <div class="form-text">
+                                    Upload a CSV file with the same structure as the training data. The file should contain all required features.
+                                </div>
+                            </div>
+                            
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-success btn-lg">
+                                    <i class="fas fa-upload me-2"></i>Upload and Predict
+                                </button>
+                            </div>
+                        </form>
+
+                        <!-- Sample Format Information -->
+                        <div class="mt-5">
+                            <h6 class="text-primary mb-3">
+                                <i class="fas fa-info-circle me-2"></i>Required CSV Format
+                            </h6>
+                            <div class="table-responsive">
+                                <table class="table table-sm table-bordered">
+                                    <thead class="table-light">
+                                        <tr>
+                                            {% if feature_names %}
+                                                {% for feature in feature_names[:8] %}
+                                                <th>{{ feature }}</th>
+                                                {% endfor %}
+                                                <th>...</th>
+                                            {% endif %}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>16</td>
+                                            <td>Male</td>
+                                            <td>Intermediate</td>
+                                            <td>87.88</td>
+                                            <td>75.11</td>
+                                            <td>80.18</td>
+                                            <td>0.82</td>
+                                            <td>55.42</td>
+                                            <td>...</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <p class="small text-muted">
+                                <i class="fas fa-exclamation-triangle text-warning me-1"></i>
+                                Ensure your CSV file includes all required columns with proper data types and formats.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

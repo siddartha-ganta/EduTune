@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <!-- Header Section -->
+        <div class="text-center mb-5">
+            <h1 class="display-4 fw-bold text-primary mb-3">
+                <i class="fas fa-graduation-cap me-3"></i>EduTune
+            </h1>
+            <p class="lead text-muted">
+                A Stacked Ensemble Approach to Predicting Engagement and Performance in Education
+            </p>
+        </div>
+
+        <!-- Dataset Upload Section -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-upload me-2"></i>Upload Dataset
+                </h5>
+            </div>
+            <div class="card-body">
+                <form action="{{ url_for('upload_dataset') }}" method="post" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="dataset" class="form-label">Select CSV Dataset File</label>
+                        <input type="file" class="form-control" id="dataset" name="dataset" accept=".csv" required>
+                        <div class="form-text">Upload a CSV file containing student educational data with features like age, gender, performance metrics, etc.</div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-upload me-2"></i>Upload Dataset
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Features Section -->
+        <div class="row g-4 mb-5">
+            <div class="col-md-6">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="feature-icon mb-3">
+                            <i class="fas fa-chart-bar fa-3x text-info"></i>
+                        </div>
+                        <h5 class="card-title">Exploratory Data Analysis</h5>
+                        <p class="card-text text-muted">
+                            Visualize your educational data with comprehensive EDA plots including distribution analysis, correlation heatmaps, and performance relationships.
+                        </p>
+                        <a href="{{ url_for('eda') }}" class="btn btn-outline-info">
+                            <i class="fas fa-chart-bar me-2"></i>View EDA
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="feature-icon mb-3">
+                            <i class="fas fa-tachometer-alt fa-3x text-success"></i>
+                        </div>
+                        <h5 class="card-title">Model Performance</h5>
+                        <p class="card-text text-muted">
+                            Compare multiple regression algorithms including KNN, SVR, Decision Tree, and Hybrid Stacking models with detailed performance metrics.
+                        </p>
+                        <a href="{{ url_for('performance') }}" class="btn btn-outline-success">
+                            <i class="fas fa-tachometer-alt me-2"></i>View Performance
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="feature-icon mb-3">
+                            <i class="fas fa-brain fa-3x text-warning"></i>
+                        </div>
+                        <h5 class="card-title">Single Prediction</h5>
+                        <p class="card-text text-muted">
+                            Make individual predictions for engagement and performance scores by inputting student characteristics and educational metrics.
+                        </p>
+                        <a href="{{ url_for('prediction') }}" class="btn btn-outline-warning">
+                            <i class="fas fa-user me-2"></i>Single Predict
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="feature-icon mb-3">
+                            <i class="fas fa-file-csv fa-3x text-danger"></i>
+                        </div>
+                        <h5 class="card-title">Batch Prediction</h5>
+                        <p class="card-text text-muted">
+                            Upload a CSV file with multiple student records and get bulk predictions for engagement and performance scores.
+                        </p>
+                        <a href="{{ url_for('prediction') }}" class="btn btn-outline-danger">
+                            <i class="fas fa-file-csv me-2"></i>Batch Predict
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- About Section -->
+        <div class="card shadow-sm">
+            <div class="card-header bg-light">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-info-circle me-2"></i>About EduTune
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="mb-3">
+                    EduTune is an advanced machine learning application designed to predict student engagement and performance in educational settings. 
+                    The system uses a stacked ensemble approach combining multiple regression algorithms to provide accurate predictions.
+                </p>
+                
+                <h6 class="fw-bold">Key Features:</h6>
+                <ul class="list-unstyled">
+                    <li><i class="fas fa-check text-success me-2"></i>Multiple regression algorithms (KNN, SVR, Decision Tree, Hybrid Stacking)</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Comprehensive exploratory data analysis</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Real-time performance metrics comparison</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Single and batch prediction capabilities</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Automated model training and persistence</li>
+                </ul>
+                
+                <h6 class="fw-bold">Prediction Targets:</h6>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="p-3 bg-light rounded">
+                            <h6 class="text-primary mb-2">
+                                <i class="fas fa-heart me-2"></i>Engagement Score
+                            </h6>
+                            <p class="small text-muted mb-0">
+                                Predicts student engagement levels based on behavioral and physiological metrics.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="p-3 bg-light rounded">
+                            <h6 class="text-success mb-2">
+                                <i class="fas fa-chart-line me-2"></i>Performance Score
+                            </h6>
+                            <p class="small text-muted mb-0">
+                                Predicts academic performance based on skill development and learning metrics.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

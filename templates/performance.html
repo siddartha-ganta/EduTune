@@ -1,0 +1,220 @@
+{% extends "base.html" %}
+
+{% block title %}Model Performance - EduTune{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="text-primary mb-2">
+                    <i class="fas fa-tachometer-alt me-2"></i>Model Performance Analysis
+                </h2>
+                <p class="text-muted">Comprehensive comparison of regression algorithms for engagement and performance prediction</p>
+            </div>
+            <a href="{{ url_for('home') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Back to Home
+            </a>
+        </div>
+
+        {% if results %}
+        <!-- Engagement Score Models -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-heart me-2"></i>Engagement Score Prediction Models
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead class="table-dark">
+							<tr style="color: #ffffff !important;">
+								<th style="color: #ffffff !important;">Model</th>
+								<th style="color: #ffffff !important;">MAE</th>
+								<th style="color: #ffffff !important;">MSE</th>
+								<th style="color: #ffffff !important;">RMSE</th>
+								<th style="color: #ffffff !important;">R² Score</th>
+								<th style="color: #ffffff !important;">Performance</th>
+							</tr>
+                        </thead>
+                        <tbody>
+                            {% for model_name, metrics in results.engagement.items() %}
+                            <tr>
+                                <td>
+                                    <strong>
+                                        {% if model_name == 'KNN' %}
+                                            <i class="fas fa-users text-info me-2"></i>K-Nearest Neighbors
+                                        {% elif model_name == 'SVR' %}
+                                            <i class="fas fa-vector-square text-success me-2"></i>Support Vector Regressor
+                                        {% elif model_name == 'Decision Tree' %}
+                                            <i class="fas fa-sitemap text-warning me-2"></i>Decision Tree
+                                        {% elif model_name == 'Hybrid' %}
+                                            <i class="fas fa-layer-group text-danger me-2"></i>Hybrid Stacking
+                                        {% endif %}
+                                        {{ model_name }}
+                                    </strong>
+                                </td>
+                                <td>{{ "%.4f"|format(metrics.MAE) }}</td>
+                                <td>{{ "%.4f"|format(metrics.MSE) }}</td>
+                                <td>{{ "%.4f"|format(metrics.RMSE) }}</td>
+                                <td>
+                                    <span class="badge bg-{{ 'success' if metrics.R2_Score > 0.9 else 'warning' if metrics.R2_Score > 0.6 else 'danger' }}">
+                                        {{ "%.4f"|format(metrics.R2_Score) }}
+                                    </span>
+                                </td>
+                                <td>
+                                    {% set performance = 'Excellent' if metrics.R2_Score > 0.9 else 'Good' if metrics.R2_Score > 0.6 else 'Poor' %}
+                                    <span class="badge bg-{{ 'success' if performance == 'Excellent' else 'warning' if performance == 'Good' else 'danger' }}">
+                                        {{ performance }}
+                                    </span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Performance Score Models -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-success text-white">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-chart-line me-2"></i>Performance Score Prediction Models
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead class="table-dark">
+							<tr style="color: #ffffff !important;">
+								<th style="color: #ffffff !important;">Model</th>
+								<th style="color: #ffffff !important;">MAE</th>
+								<th style="color: #ffffff !important;">MSE</th>
+								<th style="color: #ffffff !important;">RMSE</th>
+								<th style="color: #ffffff !important;">R² Score</th>
+								<th style="color: #ffffff !important;">Performance</th>
+							</tr>
+                        </thead>
+                        <tbody>
+                            {% for model_name, metrics in results.performance.items() %}
+                            <tr>
+                                <td>
+                                    <strong>
+                                        {% if model_name == 'KNN' %}
+                                            <i class="fas fa-users text-info me-2"></i>K-Nearest Neighbors
+                                        {% elif model_name == 'SVR' %}
+                                            <i class="fas fa-vector-square text-success me-2"></i>Support Vector Regressor
+                                        {% elif model_name == 'Decision Tree' %}
+                                            <i class="fas fa-sitemap text-warning me-2"></i>Decision Tree
+                                        {% elif model_name == 'Hybrid' %}
+                                            <i class="fas fa-layer-group text-danger me-2"></i>Hybrid Stacking
+                                        {% endif %}
+                                        {{ model_name }}
+                                    </strong>
+                                </td>
+                                <td>{{ "%.4f"|format(metrics.MAE) }}</td>
+                                <td>{{ "%.4f"|format(metrics.MSE) }}</td>
+                                <td>{{ "%.4f"|format(metrics.RMSE) }}</td>
+                                <td>
+                                    <span class="badge bg-{{ 'success' if metrics.R2_Score > 0.9 else 'warning' if metrics.R2_Score > 0.6 else 'danger' }}">
+                                        {{ "%.4f"|format(metrics.R2_Score) }}
+                                    </span>
+                                </td>
+                                <td>
+                                    {% set performance = 'Excellent' if metrics.R2_Score > 0.9 else 'Good' if metrics.R2_Score > 0.6 else 'Poor' %}
+                                    <span class="badge bg-{{ 'success' if performance == 'Excellent' else 'warning' if performance == 'Good' else 'danger' }}">
+                                        {{ performance }}
+                                    </span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Model Information -->
+        <div class="card shadow-sm">
+            <div class="card-header bg-light">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-info-circle me-2"></i>Model Information
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="h-100 p-3 border rounded">
+                            <h6 class="text-info">
+                                <i class="fas fa-users me-2"></i>K-Nearest Neighbors (KNN)
+                            </h6>
+                            <p class="small text-muted mb-0">
+                                Non-parametric algorithm that makes predictions based on the k-nearest data points. Simple yet effective for regression tasks with n_neighbors=5.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="h-100 p-3 border rounded">
+                            <h6 class="text-success">
+                                <i class="fas fa-vector-square me-2"></i>Support Vector Regressor (SVR)
+                            </h6>
+                            <p class="small text-muted mb-0">
+                                Uses RBF kernel to map data into higher-dimensional space for non-linear regression. Effective for complex pattern recognition.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="h-100 p-3 border rounded">
+                            <h6 class="text-warning">
+                                <i class="fas fa-sitemap me-2"></i>Decision Tree Regressor
+                            </h6>
+                            <p class="small text-muted mb-0">
+                                Tree-based model with max_depth=2 that creates interpretable rules for predictions. Provides clear decision paths.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="h-100 p-3 border rounded">
+                            <h6 class="text-danger">
+                                <i class="fas fa-layer-group me-2"></i>Hybrid Stacking Regressor
+                            </h6>
+                            <p class="small text-muted mb-0">
+                                Combines Linear Regression as base estimator with Random Forest (100 trees) as meta-learner for enhanced prediction accuracy.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <h6 class="fw-bold">Evaluation Metrics:</h6>
+                    <ul class="list-unstyled row g-2">
+                        <li class="col-md-6">
+                            <i class="fas fa-check text-success me-2"></i>
+                            <strong>MAE (Mean Absolute Error):</strong> Average absolute difference between predictions and actual values
+                        </li>
+                        <li class="col-md-6">
+                            <i class="fas fa-check text-success me-2"></i>
+                            <strong>MSE (Mean Squared Error):</strong> Average squared difference, penalizes larger errors more
+                        </li>
+                        <li class="col-md-6">
+                            <i class="fas fa-check text-success me-2"></i>
+                            <strong>RMSE (Root Mean Squared Error):</strong> Square root of MSE, same units as target variable
+                        </li>
+                        <li class="col-md-6">
+                            <i class="fas fa-check text-success me-2"></i>
+                            <strong>R² Score:</strong> Coefficient of determination, proportion of variance explained (closer to 1 is better)
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

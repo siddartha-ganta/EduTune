@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EDA - EduTune</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container my-5">
+        <div class="row">
+            <div class="col-12">
+                <!-- Header -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h2 class="text-primary mb-2">
+                            <i class="fas fa-chart-bar me-2"></i>Exploratory Data Analysis
+                        </h2>
+                        <p class="text-muted">Visual analysis of educational data patterns and relationships</p>
+                    </div>
+                    <a href="{{ url_for('home') }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Back to Home
+                    </a>
+                </div>
+
+                {% if dataset_info %}
+                <!-- Dataset Information -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-database me-2"></i>Dataset Information
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <div class="text-center p-3 bg-light rounded">
+                                    <h4 class="text-primary mb-1">{{ dataset_info.shape[0] }}</h4>
+                                    <p class="small text-muted mb-0">Total Records</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="text-center p-3 bg-light rounded">
+                                    <h4 class="text-success mb-1">{{ dataset_info.shape[1] }}</h4>
+                                    <p class="small text-muted mb-0">Features</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="text-center p-3 bg-light rounded">
+                                    <h4 class="text-warning mb-1">{{ dataset_info.missing_values }}</h4>
+                                    <p class="small text-muted mb-0">Missing Values</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="text-center p-3 bg-light rounded">
+                                    <h4 class="text-info mb-1">{{ dataset_info.columns|length }}</h4>
+                                    <p class="small text-muted mb-0">Total Columns</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- EDA Plots -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-light">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-chart-area me-2"></i>Data Visualization
+                        </h5>
+                    </div>
+                    <div class="card-body text-center">
+                        <img src="/static/eda/eda_plots.png" 
+                             class="img-fluid rounded shadow" 
+                             alt="EDA Plots">
+                    </div>
+                </div>
+
+                <!-- Plot Descriptions -->
+                <div class="card shadow-sm">
+                    <div class="card-header bg-light">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-info-circle me-2"></i>Plot Descriptions
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <div class="h-100 p-3 border rounded">
+                                    <h6 class="text-primary">
+                                        <i class="fas fa-chart-bar me-2"></i>Distribution of Class Levels
+                                    </h6>
+                                    <p class="small text-muted mb-0">
+                                        Bar plot shows count of each class level (Beginner, Intermediate, Advanced) to understand student distribution, aiding model stratification by class.
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="h-100 p-3 border rounded">
+                                    <h6 class="text-success">
+                                        <i class="fas fa-heartbeat me-2"></i>Performance Score vs Heart Rate
+                                    </h6>
+                                    <p class="small text-muted mb-0">
+                                        Box plot compares heart rate ranges to performance scores, revealing physiological impact on educational outcomes.
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="h-100 p-3 border rounded">
+                                    <h6 class="text-warning">
+                                        <i class="fas fa-smile me-2"></i>Engagement Score by Engagement Level
+                                    </h6>
+                                    <p class="small text-muted mb-0">
+                                        Violin plot links engagement levels (1-10) to scores, highlighting varying engagement effects on learning.
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="h-100 p-3 border rounded">
+                                    <h6 class="text-info">
+                                        <i class="fas fa-music me-2"></i>Performance Score vs Pitch Accuracy
+                                    </h6>
+                                    <p class="small text-muted mb-0">
+                                        Box plot assesses pitch accuracy ranges against performance, identifying accuracy's role in musical education success.
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="h-100 p-3 border rounded">
+                                    <h6 class="text-danger">
+                                        <i class="fas fa-clock me-2"></i>Engagement Score vs Focus Time
+                                    </h6>
+                                    <p class="small text-muted mb-0">
+                                        Scatter plot explores focus time (minutes) versus engagement scores, showing concentration's influence on engagement.
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="h-100 p-3 border rounded">
+                                    <h6 class="text-secondary">
+                                        <i class="fas fa-project-diagram me-2"></i>Correlation Heatmap
+                                    </h6>
+                                    <p class="small text-muted mb-0">
+                                        Heatmap displays feature correlations, helping identify relationships (e.g., heart rate, accuracy) with engagement/performance scores.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+</body>
+</html>
